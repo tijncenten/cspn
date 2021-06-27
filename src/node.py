@@ -71,6 +71,9 @@ class Node:
     def sample(self, param, data=None, rand_gen=None):
         raise ValueError('Not implemented yet')
 
+    def mpe(self, param, data=None, rand_gen=None):
+        raise ValueError('Not implemented yet')
+
     def gradient(self, param):
         raise ValueError('Not implemented yet')
 
@@ -122,6 +125,24 @@ class Sum(Node):
 
         return results
 
+    def mpe(self, param, data=None, rand_gen=None):
+        if param is None:
+            return None
+        param = np.concatenate(param)
+
+        size = (len(param), len(self.children))
+        w_children_log_probs = np.zeros(size)
+        for i, c in enumerate(self.children):
+            w_children_log_probs[:,i] = c._ll + np.log(self.weights[i])
+
+        max_child_branches = np.argmax(w_children_log_probs, axis=1)
+
+        results = {}
+        for i, c in enumerate(self.children):
+            results[c] = param[max_child_branches == i]
+
+        return results
+
     def gradient(self, param):
         # Store the node gradient as the logarithmic version
         self._grad = logsumexp(param)
@@ -153,6 +174,17 @@ class Product(Node):
         return reduce(operator.mul, [c.value(evidence, ll=ll) for c in self.children], 1)
 
     def sample(self, param, data=None, rand_gen=None):
+        if param is None:
+            return None
+        param = np.concatenate(param)
+
+        results = {}
+        for c in self.children:
+            results[c] = param
+
+        return results
+
+    def mpe(self, param, data=None, rand_gen=None):
         if param is None:
             return None
         param = np.concatenate(param)
@@ -251,7 +283,7 @@ class Leaf(Node):
 class Bernoulli(Leaf):
     # src: https://en.wikipedia.org/wiki/Bernoulli_distribution
 
-    def __init__(self, p, scope=None):
+    def __init__(self, p=0.5, scope=None):
         super().__init__(scope=scope)
         self.p = p
         assert 0 <= p and p <= 1
@@ -293,15 +325,31 @@ class Bernoulli(Leaf):
         
         data[self.scope] = bernoulli.rvs(p=self.p, size=1, random_state=rand_gen)[0]
 
+    def mpe(self, param, data=None, rand_gen=None):
+        if param is None:
+            return None
+        param = np.concatenate(param)
+        if len(param) == 0:
+            return None
+
+        data_nans = np.isnan(data[self.scope])
+
+        n_samples = np.sum(data_nans)
+        if n_samples == 0:
+            return None
+        
+        data[self.scope] = 1 if self.p > 0.5 else 0
+
     def sgd(self, lr=0.05, data=None):
-        if data is None:
-            return
-        v = data[self.scope]
-        # print(self._grad, self._ll)
-        dp = (self.p - v) / ((1 - self.p) * self.p)
-        # dp = 1/self.p if v == 1 else 0 - 1/(1-self.p) if v == 0 else 0
-        self.p = self.p - lr * np.exp(self._grad + dp)
-        self.p = max(0.00000000000001, min(0.9999999999, self.p))
+        return
+        # if data is None:
+        #     return
+        # v = data[self.scope]
+        # # print(self._grad, self._ll)
+        # dp = (self.p - v) / ((1 - self.p) * self.p)
+        # # dp = 1/self.p if v == 1 else 0 - 1/(1-self.p) if v == 0 else 0
+        # self.p = self.p - lr * np.exp(self._grad + dp)
+        # self.p = max(0.00000000000001, min(0.9999999999, self.p))
 
 
 class Categorical(Leaf):
@@ -325,7 +373,7 @@ class Categorical(Leaf):
 class Gaussian(Leaf):
 
 
-    def __init__(self, mean, stdev, scope=None):
+    def __init__(self, mean=0, stdev=1, scope=None):
         super().__init__(scope=scope)
         self.mean = mean
         self.stdev = stdev
@@ -360,6 +408,21 @@ class Gaussian(Leaf):
             return None
         
         data[self.scope] = norm.rvs(loc=self.mean, scale=self.stdev, size=1, random_state=rand_gen)[0]
+
+    def mpe(self, param, data=None, rand_gen=None):
+        if param is None:
+            return None
+        param = np.concatenate(param)
+        if len(param) == 0:
+            return None
+
+        data_nans = np.isnan(data[self.scope])
+
+        n_samples = np.sum(data_nans)
+        if n_samples == 0:
+            return None
+        
+        data[self.scope] = self.mean
 
     def sgd(self, lr=0.05, data=None):
         if data is None:

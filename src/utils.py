@@ -62,6 +62,10 @@ def add_ids_to_spn(root):
     return True
 
 
+def eval_spn_bottom_up(root, eval_functions, results=None):
+    pass
+
+
 # Method for generating a sample from the spn, using the input_data as conditioning
 def sample(root, input_data, rand_gen=None, results=None):
     # Make a copy of the input data
@@ -83,6 +87,39 @@ def sample(root, input_data, rand_gen=None, results=None):
             # Retrieve result from node n
             # If n is a leaf node, data can be updated if the rv value is missing
             result = n.sample(param, data=data, rand_gen=rand_gen)
+
+            # If there is a result, add it to the results lookup for a next iteration
+            if result is not None and not isinstance(n, Leaf):
+                for child, param in result.items():
+                    if child not in results:
+                        results[child] = []
+                    results[child].append(param)
+
+    # The data array contains the sample
+    return data
+
+
+# Method for generating a sample from the spn using mpe, using the input_data as conditioning
+def mpe(root, input_data, rand_gen=None, results=None):
+    # Make a copy of the input data
+    data = np.array(input_data)
+    # compute the log likelihoods
+    root.value(evidence=data, ll=True)
+
+    if results is None:
+        results = {}
+    
+    root_result = [0]
+    results[root] = [root_result]
+
+    # Iterate over the spn top down over all layers
+    for layer in get_topological_order_layers(root):
+        for n in layer:
+            # Get the parameter for the current node n
+            param = results[n]
+            # Retrieve result from node n
+            # If n is a leaf node, data can be updated if the rv value is missing
+            result = n.mpe(param, data=data, rand_gen=rand_gen)
 
             # If there is a result, add it to the results lookup for a next iteration
             if result is not None and not isinstance(n, Leaf):
