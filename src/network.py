@@ -14,17 +14,17 @@ from scipy.stats import *
 
 from experiments.settings import Settings
 from experiments import learn_spn_test, spflow_rob_test, plot_rob_results, spflow_cycle_test, spflow_rat_spn_test, spflow_rat_spn_test2, spflow_mnist_test
-from experiments import analyze_data
+from experiments import analyze_data, spflow_rat_spn_vis
 
 from spn.experiments.RandomSPNs_layerwise.distributions import RatNormal
 from spn.experiments.RandomSPNs_layerwise.rat_spn import RatSpnConfig
 
 config = RatSpnConfig()
 config.F = None # Number of input features/variables (filled in later)
-config.R = 1 # Number of repetitions
+config.R = 2 # Number of repetitions
 config.D = 2 # The depth
-config.I = 2 # Number of distributions for each scope at the leaf layer
-config.S = 3 # Number of sum nodes at each layer
+config.I = 1 # Number of distributions for each scope at the leaf layer
+config.S = 2 # Number of sum nodes at each layer
 config.C = 1 # The number of classes
 config.dropout = 0.0
 config.leaf_base_class = RatNormal
@@ -32,9 +32,9 @@ config.leaf_base_kwargs = {}
 
 config2 = RatSpnConfig()
 config2.F = None # Number of input features/variables (filled in later)
-config2.R = 3 # Number of repetitions
+config2.R = 1 # Number of repetitions
 config2.D = 2 # The depth
-config2.I = 4 # Number of distributions for each scope at the leaf layer
+config2.I = 1 # Number of distributions for each scope at the leaf layer
 config2.S = 2 # Number of sum nodes at each layer
 config2.C = 1 # The number of classes
 config2.dropout = 0.0
@@ -49,20 +49,22 @@ min_instances_slice = 200 # SPFlow default: 200
 # leaf_eps_list = [2.0, 4.0, 6.0] # [None, 0.1, 0.2, 0.5, 1.0]
 # leaf_eps_list = [None, 0.1, 0.2, 0.5, 1.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0]
 # leaf_eps_list = [None, 1.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0]
-leaf_eps_list = [None, 0.1, 0.5, 1.0, 2.0, 4.0, 6.0]
+
+# leaf_eps_list = [None, 0.1, 0.5, 1.0, 2.0, 4.0, 6.0]
+leaf_eps_list = [None]
 # norm = None
 norm = 'zscore'
 
-dataset = 'gesture' # 'robot'
+dataset = 'diabetes' # 'robot'
 
 settings_list = []
-# settings_list.append(Settings(dataset, min_instances_slice=min_instances_slice, norm=norm))
+# settings_list.append(Settings(dataset, min_instances_slice=min_instances_slice, norm=norm, rat_spn_large=True))
 # settings_list.append(Settings(dataset, min_instances_slice=min_instances_slice, leaf_eps=0.1))
 # settings_list.append(Settings(dataset, min_instances_slice=min_instances_slice, leaf_eps=0.2))
 # for leaf_eps in leaf_eps_list:
 #     settings_list.append(Settings(dataset, min_instances_slice=min_instances_slice, norm=norm, leaf_eps=leaf_eps))
 
-# settings_list.append(Settings(dataset, min_instances_slice=min_instances_slice, norm=norm, class_discriminative=True))
+# settings_list.append(Settings(dataset, min_instances_slice=min_instances_slice, norm=norm, rat_spn_large=True, class_discriminative=True))
 # settings_list.append(Settings(dataset, min_instances_slice=min_instances_slice, leaf_eps=0.1, class_discriminative=True))
 # settings_list.append(Settings(dataset, min_instances_slice=min_instances_slice, leaf_eps=0.2, class_discriminative=True))
 # for leaf_eps in leaf_eps_list:
@@ -78,7 +80,7 @@ settings_list = []
 
 settings_list.append(
     Settings(dataset, class_discriminative=True,
-        build_rat_spn=True, rat_spn_config=config, rat_spn_large=False,
+        build_rat_spn=True, rat_spn_config=config, rat_spn_large=True,
         n_epochs=n_epochs, batch_size=batch_size, learning_rate=learning_rate, norm=norm)
 )
 
@@ -108,7 +110,7 @@ settings_list.append(
 # settings_list.append(
 #     Settings(dataset, class_discriminative=True,
 #         build_rat_spn=True, rat_spn_config=config2, rat_spn_large=True,
-#         n_epochs=n_epochs, batch_size=batch_size, learning_rate=learning_rate)
+#         n_epochs=n_epochs, batch_size=batch_size, learning_rate=learning_rate, norm='zscore')
 # )
 # settings_list.append(
 #     Settings(dataset, class_discriminative=True,
@@ -124,18 +126,18 @@ start = time.time()
 # spflow_mnist_test.run_test()
 # spflow_rat_spn_test.run_test()
 # spflow_rat_spn_test2.run_test(settings_list[0])
+spflow_rat_spn_vis.run_test(settings_list[0])
 
 
 # Robustness evaluation run
-for settings in settings_list:
-    spn = None
-    for leaf_eps in leaf_eps_list:
-        settings.leaf_eps = leaf_eps
-        spn = spflow_rob_test.run_test(settings, spn=spn)
+# for settings in settings_list:
+#     spn = None
+#     for leaf_eps in leaf_eps_list:
+#         settings.leaf_eps = leaf_eps
+#         spn = spflow_rob_test.run_test(settings, spn=spn)
 
 # Script for running visualization/plotting script
 # plot_rob_results.run_test(settings_list)
-
 
 
 

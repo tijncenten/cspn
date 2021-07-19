@@ -33,10 +33,11 @@ def layerwise_to_simple_spn(model, ncat, debug=False, leaf=False, test=False, ra
         spn.children.extend(children)
         spn.weights.extend([1.0/len(children) for i in range(len(children))])
     elif rat_spn:
-        spn = Sum()
-        child = rat_spn_layer_to_simple(model, ncat, debug=debug)
-        spn.children.append(child)
-        spn.weights.append(1.0)
+        # spn = Sum()
+        # child = rat_spn_layer_to_simple(model, ncat, debug=debug)
+        # spn.children.append(child)
+        # spn.weights.append(1.0)
+        spn = rat_spn_layer_to_simple(model, ncat, debug=debug)
     else:
         raise NotImplementedError()
 

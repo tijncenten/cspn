@@ -6,7 +6,7 @@ import os
 import csv
 import time
 
-def run_test(settings_list=None):
+def run_test(settings_list=None, title=None, labels=None, mixed_samples=True, file_prefix=None, large=False, store_as_final=False, final_folder=None, hide_title=False):
     ###########
     ## SETUP ##
     ###########
@@ -26,6 +26,11 @@ def run_test(settings_list=None):
         )
 
     target_dir = 'results/plots'
+    suffix = str(time.time())
+    if store_as_final:
+        final_folder = title.replace(' ', '') if final_folder is None else final_folder.replace(' ', '')
+        target_dir = f'results/final/{final_folder}'
+        suffix = 'final'
 
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
@@ -43,24 +48,56 @@ def run_test(settings_list=None):
     ax.grid()
     ax2 = ax.twinx()
 
-    for res, settings in zip(results, settings_list):
-        ax.plot(res[0], res[3], label=f'{settings.filename_ext}')
+    for i, (res, settings) in enumerate(zip(results, settings_list)):
+        label = f'{settings.filename_ext}'
+        if labels is not None:
+            label = labels[i]
+        ax.plot(res[0], res[3], label=label)
         ax2.plot(res[0], [s / res[2][0] for s in res[2]], '--')
 
 
+    # Add striped lines for samples to the legend
+    # ax.plot([], [], '--', color='black', label='Samples (%)')
 
-    ax.set_ylim(bottom=0, top=1)
-    ax.set_xlabel('$\epsilon$-robustness')
-    ax.set_ylabel('Accuracy')
+    if large:
+        fontsize = 16
+        title_fontsize = 22
+        tick_fontsize = 12
+        ax.tick_params(axis='x', labelsize=tick_fontsize)
+        ax.tick_params(axis='y', labelsize=tick_fontsize)
+        ax2.tick_params(axis='y', labelsize=tick_fontsize)
+    else:
+        fontsize = 12
+        title_fontsize = 12
+
+    margin = 0.05
+    bottom = 0
+    top = 1
+    bottom = bottom - margin
+    top = top + margin
+
+
+    ax.set_ylim(bottom=bottom, top=top)
+    ax.set_xlabel('$\epsilon$-robustness', fontsize=fontsize)
+    ax.set_ylabel('Accuracy', fontsize=fontsize)
+
+    if title is not None and not hide_title:
+        ax.set_title(title, fontsize=title_fontsize)
     
 
-    ax2.set_ylim(bottom=0, top=1)
-    ax2.set_ylabel('Samples (%)')
+    ax2.set_ylim(bottom=bottom, top=top)
+    ax2.set_ylabel('Samples (frac.)', fontsize=fontsize)
 
     
-    ax.legend(loc='lower left')
+    fig.legend(loc='lower left', bbox_to_anchor=(0,0), bbox_transform=ax.transAxes, fontsize=fontsize)
 
-    fig.savefig(f'{target_dir}/plot-{time.time()}.png')
+    prefix = '' if file_prefix is None else f'-{file_prefix}'
+    fig.savefig(f'{target_dir}/plot{prefix}-{suffix}.png')
+    fig.savefig(f'{target_dir}/plot{prefix}-{suffix}.pdf')
+
+
+    if not mixed_samples:
+        return
 
 
     # Plot the accuracy of the mixed samples data (same set of samples for both results)
@@ -68,8 +105,13 @@ def run_test(settings_list=None):
     paths = [f'{settings.results_folder}/raw-data-{settings.filename_ext}.csv' for settings in settings_list]
     raw_results = [read_raw_file(path) for path in paths]
 
+    figsize = (4,3)
+    fontsize = 12
+    title_fontsize = fontsize
+
     for sample_set_id in range(len(settings_list)):
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=figsize)
+        fig.tight_layout(pad=2)
         ax.grid()
 
         rob = raw_results[sample_set_id][0]
@@ -88,18 +130,27 @@ def run_test(settings_list=None):
                 accs[i].append(corr_count_rob / len(corr_rob))
 
         for i, (acc, settings) in enumerate(zip(accs, settings_list)):
-            ax.plot(eps, acc, label=f'{i}: {settings.filename_ext}')
+            label = f'{i}: {settings.filename_ext}'
+            if labels is not None:
+                label = labels[i]
+            if i == sample_set_id:
+                label += '*'
+            ax.plot(eps, acc, label=label)
 
 
 
-        ax.set_ylim(bottom=0, top=1)
-        ax.set_xlabel(f'$\epsilon$-robustness (sample set {sample_set_id})')
-        ax.set_ylabel('Accuracy')
+        ax.set_ylim(bottom=bottom, top=top)
+        ax.set_xlabel(f'$\epsilon$-robustness', fontsize=fontsize)
+        ax.set_ylabel('Accuracy', fontsize=fontsize)
+
+        if title is not None and not hide_title:
+            ax.set_title(f'{title} ({labels[sample_set_id]} samples)', fontsize=title_fontsize)
 
         
-        ax.legend(loc='lower left')
+        ax.legend(loc='lower left', fontsize=fontsize)
 
-        fig.savefig(f'{target_dir}/plot-samples-{sample_set_id}-{time.time()}.png')
+        fig.savefig(f'{target_dir}/plot-samples{prefix}-{sample_set_id}-{suffix}.png')
+        fig.savefig(f'{target_dir}/plot-samples{prefix}-{sample_set_id}-{suffix}.pdf')
 
     print('done')
 
