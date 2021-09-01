@@ -10,6 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 
+structure_only = True
+
 x0_mean = 5
 x0_std = 1
 
@@ -37,8 +39,13 @@ assert is_valid(spn)
 
 large_plot = False
 margins = 1
+figsize = None
 
-fig = plt.figure()
+if structure_only:
+    margins = 0.3
+    figsize = (4,3)
+
+fig = plt.figure(figsize=figsize)
 
 plot_labeled_spn(spn,
     f'src/report-vis/spn-example.png',
@@ -46,6 +53,20 @@ plot_labeled_spn(spn,
     save=False,
     margins=margins
 )
+
+if structure_only:
+    fig.text(0.36, 0.35, '0.5')
+    fig.text(0.47, 0.35, '0.5')
+    fig.text(0.36, 0.3, '$w_1$')
+    fig.text(0.47, 0.3, '$w_2$')
+    fig.text(0.55, 0.9, '$f_0(X_0)f_1(X_1)$')
+    fig.text(0.86, 0.48, '$f_0(X_0)$')
+    fig.text(0.5, 0.48, '$f_1(X_1)$')
+    fig.text(0.13, 0.06, '$f_1(X_1)$')
+    fig.text(0.65, 0.06, '$f_1(X_1)$')
+    fig.savefig(f'src/report-vis/spn-factor-example.png')
+    fig.savefig(f'src/report-vis/spn-factor-example.pdf')
+    exit()
 
 fig.text(0.41, 0.4, '0.5')
 fig.text(0.48, 0.4, '0.5')

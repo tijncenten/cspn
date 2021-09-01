@@ -10,6 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 
+annotated = True
+
 def create_structure():
     class_left = Categorical(p=[0.5, 0.5], scope=1)
     spn_center = Sum(weights=[0.5, 0.5], children=[Gaussian(0, 1, scope=0), Gaussian(5, 1, scope=0)])
@@ -56,6 +58,15 @@ fig.text(0.4, 0.7, '$w_1$')
 fig.text(0.565, 0.7, '$w_2$')
 fig.text(0.36, 0.3, '$w_3$')
 fig.text(0.61, 0.3, '$w_4$')
+
+if annotated:
+    fig.text(0.48, 0.32, '$\mathcal{B}$', fontsize=16)
+    fig.text(0.34, 0.6, '$\mathcal{L}$', fontsize=16)
+    fig.text(0.63, 0.6, '$\mathcal{R}$', fontsize=16)
+    fig.text(0.49, 0.85, '$\mathcal{T}$', fontsize=16)
+    fig.savefig(f'src/report-vis/spn-problem-example-annotated.png')
+    fig.savefig(f'src/report-vis/spn-problem-example-annotated.pdf')
+    exit()
 
 
 fig.savefig(f'src/report-vis/spn-problem-example.png')
