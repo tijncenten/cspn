@@ -1,0 +1,7 @@
+Dataset statistics (krvskp)
+nr_data = 3196
+nr_vars = 37
+nr_train = 2237
+nr_test = 959
+ncat = 2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+p_types = Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical

@@ -1,0 +1,7 @@
+Dataset statistics (vowel)
+nr_data = 990
+nr_vars = 13
+nr_train = 693
+nr_test = 297
+ncat = 15,2,1,1,1,1,1,1,1,1,1,1,11
+p_types = Categorical,Categorical,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Categorical

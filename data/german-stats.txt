@@ -1,0 +1,7 @@
+Dataset statistics (german)
+nr_data = 1000
+nr_vars = 21
+nr_train = 700
+nr_test = 300
+ncat = 4,1,5,10,1,5,5,1,4,3,1,4,1,3,3,1,4,1,2,2,2
+p_types = Categorical,Gaussian,Categorical,Categorical,Gaussian,Categorical,Categorical,Gaussian,Categorical,Categorical,Gaussian,Categorical,Gaussian,Categorical,Categorical,Gaussian,Categorical,Gaussian,Categorical,Categorical,Categorical

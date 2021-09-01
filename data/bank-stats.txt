@@ -1,0 +1,7 @@
+Dataset statistics (bank)
+nr_data = 41188
+nr_vars = 21
+nr_train = 28831
+nr_test = 12357
+ncat = 1,12,4,8,3,3,3,2,10,5,1,1,2,1,3,1,1,1,1,1,2
+p_types = Gaussian,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Gaussian,Gaussian,Categorical,Gaussian,Categorical,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Categorical

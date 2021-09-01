@@ -1,0 +1,7 @@
+Dataset statistics (texture)
+nr_data = 5500
+nr_vars = 41
+nr_train = 3849
+nr_test = 1651
+ncat = 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,11
+p_types = Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Categorical

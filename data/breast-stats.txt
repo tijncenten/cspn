@@ -1,0 +1,7 @@
+Dataset statistics (breast)
+nr_data = 569
+nr_vars = 31
+nr_train = 398
+nr_test = 171
+ncat = 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2
+p_types = Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Categorical

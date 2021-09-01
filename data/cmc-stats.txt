@@ -1,0 +1,7 @@
+Dataset statistics (cmc)
+nr_data = 1473
+nr_vars = 10
+nr_train = 1031
+nr_test = 442
+ncat = 1,4,4,17,2,2,4,4,2,3
+p_types = Gaussian,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical,Categorical

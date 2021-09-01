@@ -1,0 +1,7 @@
+Dataset statistics (electricity)
+nr_data = 45312
+nr_vars = 9
+nr_train = 31718
+nr_test = 13594
+ncat = 1,7,1,1,1,1,1,1,2
+p_types = Gaussian,Categorical,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Categorical

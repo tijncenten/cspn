@@ -1,0 +1,7 @@
+Dataset statistics (wine)
+nr_data = 6497
+nr_vars = 12
+nr_train = 4547
+nr_test = 1950
+ncat = 1,1,1,1,1,1,1,1,1,1,1,2
+p_types = Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Categorical

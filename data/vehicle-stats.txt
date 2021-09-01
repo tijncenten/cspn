@@ -1,0 +1,7 @@
+Dataset statistics (vehicle)
+nr_data = 846
+nr_vars = 19
+nr_train = 592
+nr_test = 254
+ncat = 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4
+p_types = Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Gaussian,Categorical
